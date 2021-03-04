@@ -1699,7 +1699,7 @@ void draw_page() {
         M5.Lcd.drawString(ns.delta_display, 130, 24, GFXFF);
         */
         
-        M5.Lcd.fillRect(0,48,240,47,TFT_BLACK);
+        M5.Lcd.fillRect(0,48,240,71,TFT_BLACK);
         if(ns.iob>0)
           M5.Lcd.setTextColor(TFT_WHITE, TFT_BLACK);
         else
@@ -1731,7 +1731,7 @@ void draw_page() {
           sprintf(tmpstr2, "b:%3.1f (", ns.basal_tempbasal);
           
         sprintf(tmpstr, "%4.2f)", ns.basal_current);
-        if( tmpstr[0]==' ')
+        if( tmpstr[0]==' ' || tmpstr[3]=='0')
           sprintf(tmpstr, "%3.1f)", ns.basal_current);
           
         strcat(tmpstr2, tmpstr);
