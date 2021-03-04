@@ -1237,7 +1237,7 @@ int readNightscout(char *url, char *token, struct NSinfo *ns) {
           // Serial.println("LOOP OK");
 
           JsonObject basal = JSONdoc["basal"];
-          strncpy(ns->basal_display, basal["display"] | "N/A", 16); // "T: 0.950U"      
+          strncpy(ns->basal_display, basal["display"] | "N/A", 16); // "T: 0.950U"
           // Serial.println("BASAL OK");
           
           JsonObject basal_current_doc = JSONdoc["basal"]["current"];
@@ -1723,6 +1723,20 @@ void draw_page() {
         }
         M5.Lcd.drawString(tmpstr, 0, 72, GFXFF);
 
+        //Basal
+        //strcat(tmpstr, ns.basal_tempbasal);
+        char tmpstr2[30];
+        sprintf(tmpstr2, "b:%4.2f (", ns.basal_tempbasal);
+        if( tmpstr2[2]==' ' || tmpstr2[5]=='0')
+          sprintf(tmpstr2, "b:%3.1f (", ns.basal_tempbasal);
+          
+        sprintf(tmpstr, "%4.2f)", ns.basal_current);
+        if( tmpstr[0]==' ')
+          sprintf(tmpstr, "%3.1f)", ns.basal_current);
+          
+        strcat(tmpstr2, tmpstr);
+        M5.Lcd.drawString(tmpstr2, 0, 96, GFXFF);
+
         // show BIG delta below the name
         M5.Lcd.setFreeFont(FSSB24);
         
@@ -1789,7 +1803,7 @@ void draw_page() {
       sprintf(tmpstr, "Glyk: %4.1f %s", ns.sensSgv, ns.sensDir);
       Serial.println(tmpstr);
       
-      M5.Lcd.fillRect(0, 110, 320, 114, TFT_BLACK);
+      M5.Lcd.fillRect(150, 110, 320, 114, TFT_BLACK);
       M5.Lcd.setTextSize(2);
       M5.Lcd.setTextDatum(TL_DATUM);
       M5.Lcd.setTextColor(glColor, TFT_BLACK);
