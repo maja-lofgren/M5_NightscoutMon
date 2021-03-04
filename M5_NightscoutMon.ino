@@ -871,10 +871,12 @@ void drawMiniGraph(struct NSinfo *ns){
   // M5.Lcd.drawLine(231, 110, 231, 207, TFT_DARKGREY);
   // M5.Lcd.drawLine(231, 207, 319, 207, TFT_DARKGREY);
   // M5.Lcd.drawLine(319, 110, 319, 207, TFT_DARKGREY);
-  M5.Lcd.drawLine(231, 113, 319, 113, TFT_LIGHTGREY);
-  M5.Lcd.drawLine(231, 203, 319, 203, TFT_LIGHTGREY);
-  M5.Lcd.drawLine(231, 200-(4-3)*10+3, 319, 200-(4-3)*10+3, TFT_LIGHTGREY);
-  M5.Lcd.drawLine(231, 200-(9-3)*10+3, 319, 200-(9-3)*10+3, TFT_LIGHTGREY);
+  M5.Lcd.drawLine(231, 200-(cfg.red_high-3)*10+3, 319, 200-(cfg.red_high-3)*10+3, TFT_RED);
+  M5.Lcd.drawLine(231, 200-(cfg.yellow_high-3)*10+3, 319, 200-(cfg.yellow_high-3)*10+3, TFT_YELLOW);
+
+  M5.Lcd.drawLine(231, 200-(cfg.yellow_low-3)*10+3, 319, 200-(cfg.yellow_low-3)*10+3, TFT_YELLOW);
+  M5.Lcd.drawLine(231, 200-(cfg.red_low-3)*10+3, 319, 200-(cfg.red_low-3)*10+3, TFT_RED);
+  
   Serial.print("Last 10 values: ");
   for(i=9; i>=0; i--) {
     sgvColor = TFT_GREEN;
@@ -1723,12 +1725,13 @@ void draw_page() {
 
         // show BIG delta below the name
         M5.Lcd.setFreeFont(FSSB24);
+        
         // strcpy(ns.delta_display, "+8.9");
         if(ns.delta_mgdl>7)
           M5.Lcd.setTextColor(TFT_WHITE, BLACK);
         else
           M5.Lcd.setTextColor(TFT_LIGHTGREY, BLACK);
-        M5.Lcd.drawString(ns.delta_display, 103, 48, GFXFF);
+        M5.Lcd.drawString(ns.delta_display, 103, 25, GFXFF); //48
         M5.Lcd.setFreeFont(FSSB12);
 
       } else {
@@ -1801,20 +1804,30 @@ void draw_page() {
       }
       // Serial.print("SGV string length = "); Serial.print(strlen(sensSgvStr));
       // Serial.print(", smaller_font = "); Serial.println(smaller_font);
+
       if( smaller_font ) {
-        M5.Lcd.setFreeFont(FSSB18);
-        M5.Lcd.drawString(sensSgvStr, 0, 130, GFXFF);
+        //M5.Lcd.setFreeFont(FSSB18);
+        //M5.Lcd.drawString(sensSgvStr, 0, 130, GFXFF);
+        M5.Lcd.loadFont("C059-Bold-100", SD);  // Use font stored on SD (library adds leading / and .vlw)
+        M5.Lcd.drawString(sensSgvStr, 0, 125);
       } else {
-        M5.Lcd.setFreeFont(FSSB24);
-        M5.Lcd.drawString(sensSgvStr, 0, 120, GFXFF);
+        //M5.Lcd.setFreeFont(FSSB24);
+        //M5.Lcd.drawString(sensSgvStr, 0, 120, GFXFF);
+        M5.Lcd.loadFont("C059-Bold-112", SD);       // Use font stored on SD
+        //M5.Lcd.drawString(sensSgvStr, -20, 105);
+        M5.Lcd.drawString(sensSgvStr, 0, 120);
       }
+      M5.Lcd.unloadFont();
+      
       int tw=M5.Lcd.textWidth(sensSgvStr);
       // int th=M5.Lcd.fontHeight(GFXFF);
       // Serial.print("textWidth="); Serial.println(tw);
       // Serial.print("textHeight="); Serial.println(th);
     
       if(ns.arrowAngle!=180)
-        drawArrow(0+tw+25, 120+40, 10, ns.arrowAngle+85, 40, 40, glColor);
+        drawArrow(200, 120+45, 10, ns.arrowAngle+85, 30, 30, glColor);
+        //drawArrow(140, 90, 10, ns.arrowAngle+85, 35, 35, glColor);
+        //drawArrow(0+tw+25, 120+40, 10, ns.arrowAngle+85, 40, 40, glColor);
     
       /*
       // draw help lines
@@ -1854,25 +1867,35 @@ void draw_page() {
       M5.Lcd.setTextColor(glColor, TFT_BLACK);
       char sensSgvStr[30];
       // int smaller_font = 0;
+      
+        //M5.Lcd.drawString(sensSgvStr, -20, 105);
+        
       if( cfg.show_mgdl ) {
         if(ns.sensSgvMgDl<100) {
           sprintf(sensSgvStr, "%2.0f", ns.sensSgvMgDl);
-          M5.Lcd.setFreeFont(FSSB24);
+          M5.Lcd.loadFont("C059-Bold-180", SD);       // Use font stored on SD
+          //M5.Lcd.setFreeFont(FSSB24);
         } else {
           sprintf(sensSgvStr, "%3.0f", ns.sensSgvMgDl);
-          M5.Lcd.setFreeFont(FSSB24);
+          M5.Lcd.loadFont("C059-Bold-140", SD);
+          //M5.Lcd.setFreeFont(FSSB24);
         }
       } else {
         if(ns.sensSgv<10) {
           sprintf(sensSgvStr, "%3.1f", ns.sensSgv);
-          M5.Lcd.setFreeFont(FSSB24);
+          M5.Lcd.loadFont("C059-Bold-180", SD);
+          //M5.Lcd.setFreeFont(FSSB24);
         } else {
           sprintf(sensSgvStr, "%4.1f", ns.sensSgv);
-          M5.Lcd.setFreeFont(FSSB18);
+          M5.Lcd.loadFont("C059-Bold-140", SD);
+          //M5.Lcd.setFreeFont(FSSB18);
         }
       }
-      M5.Lcd.drawString(sensSgvStr, 160, 120, GFXFF);
-    
+          
+      M5.Lcd.drawString(sensSgvStr, 160, 140);
+      //M5.Lcd.drawString(sensSgvStr, 160, 120, GFXFF);
+      M5.Lcd.unloadFont();
+      
       M5.Lcd.fillRect(0, 0, 320, 40, TFT_BLACK);
       M5.Lcd.setFreeFont(FSSB24);
       M5.Lcd.setTextSize(1);
