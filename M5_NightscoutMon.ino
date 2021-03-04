@@ -1731,7 +1731,7 @@ void draw_page() {
           M5.Lcd.setTextColor(TFT_WHITE, BLACK);
         else
           M5.Lcd.setTextColor(TFT_LIGHTGREY, BLACK);
-        M5.Lcd.drawString(ns.delta_display, 103, 25, GFXFF); //48
+        M5.Lcd.drawString(ns.delta_display, 103, 48, GFXFF);
         M5.Lcd.setFreeFont(FSSB12);
 
       } else {
