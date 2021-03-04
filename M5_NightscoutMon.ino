@@ -1803,7 +1803,7 @@ void draw_page() {
       sprintf(tmpstr, "Glyk: %4.1f %s", ns.sensSgv, ns.sensDir);
       Serial.println(tmpstr);
       
-      M5.Lcd.fillRect(150, 110, 320, 114, TFT_BLACK);
+      M5.Lcd.fillRect(231, 110, 320, 114, TFT_BLACK);
       M5.Lcd.setTextSize(2);
       M5.Lcd.setTextDatum(TL_DATUM);
       M5.Lcd.setTextColor(glColor, TFT_BLACK);
