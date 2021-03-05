@@ -841,9 +841,6 @@ void drawArrow(int x, int y, int asize, int aangle, int pwidth, int plength, uin
   float xx3 = x3*cos(angle)-y3*sin(angle)+dx;
   float yy3 = y3*cos(angle)+x3*sin(angle)+dy;
   M5.Lcd.fillTriangle(xx1,yy1,xx3,yy3,xx2,yy2, color);
-
-  xx1 = x1*cos(angle)-(y1-5)*sin(angle)+dx; //line doesn't have to go all the way to point of arrow
-  yy1 = y1*cos(angle)+(x1-5)*sin(angle)+dy;
   
   M5.Lcd.drawLine(x, y, xx1, yy1, color);
   M5.Lcd.drawLine(x+1, y, xx1+1, yy1, color);
