@@ -149,6 +149,8 @@ uint16_t osx=120, osy=120, omx=120, omy=120, ohx=120, ohy=120;  // Saved H, M, S
 boolean initial = 1;
 boolean mDNSactive = false;
 
+float lastSensorValue=0.0;
+
 #ifndef min
   #define min(a,b) (((a) < (b)) ? (a) : (b))
 #endif
@@ -1831,8 +1833,8 @@ void draw_page() {
     
       sprintf(tmpstr, "Glyk: %4.1f %s", ns.sensSgv, ns.sensDir);
       Serial.println(tmpstr);
+
       
-      M5.Lcd.fillRect(0, 110, 320, 114, TFT_BLACK);
       M5.Lcd.setTextSize(2);
       M5.Lcd.setTextDatum(TL_DATUM);
       M5.Lcd.setTextColor(glColor, TFT_BLACK);
@@ -1845,24 +1847,36 @@ void draw_page() {
         if( sensSgvStr[0]!=' ' )
           smaller_font = 1;
       }
-      // Serial.print("SGV string length = "); Serial.print(strlen(sensSgvStr));
-      // Serial.print(", smaller_font = "); Serial.println(smaller_font);
-
-      if( smaller_font ) {
-        //M5.Lcd.setFreeFont(FSSB18);
-        //M5.Lcd.drawString(sensSgvStr, 0, 130, GFXFF);
-        M5.Lcd.loadFont("C059-Bold-100", SD);  // Use font stored on SD (library adds leading / and .vlw)
-        M5.Lcd.drawString(sensSgvStr, 0, 125);
-      } else {
-        //M5.Lcd.setFreeFont(FSSB24);
-        //M5.Lcd.drawString(sensSgvStr, 0, 120, GFXFF);
-        M5.Lcd.loadFont("C059-Bold-112", SD);       // Use font stored on SD
-        //M5.Lcd.drawString(sensSgvStr, -20, 105);
-        M5.Lcd.drawString(sensSgvStr, 0, 120);
+      Serial.print("lastSV: ");
+      Serial.println(lastSensorValue);
+      Serial.print("currSV: ");
+      Serial.println(ns.sensSgv);
+      if(lastSensorValue==ns.sensSgv)
+        M5.Lcd.fillRect(230, 110, 320, 114, TFT_BLACK); //redraws only mini-graph
+      else {
+        M5.Lcd.fillRect(0, 110, 320, 114, TFT_BLACK); //redraws big BG-values + mini-graph
+        // Serial.print("SGV string length = "); Serial.print(strlen(sensSgvStr));
+        // Serial.print(", smaller_font = "); Serial.println(smaller_font);
+  
+        if( smaller_font ) {
+          //M5.Lcd.setFreeFont(FSSB18);
+          //M5.Lcd.drawString(sensSgvStr, 0, 130, GFXFF);
+          M5.Lcd.loadFont("C059-Bold-100", SD);  // Use font stored on SD (library adds leading / and .vlw)
+          M5.Lcd.drawString(sensSgvStr, 0, 125);
+        } else {
+          //M5.Lcd.setFreeFont(FSSB24);
+          //M5.Lcd.drawString(sensSgvStr, 0, 120, GFXFF);
+          M5.Lcd.loadFont("C059-Bold-112", SD);       // Use font stored on SD
+          //M5.Lcd.drawString(sensSgvStr, -20, 105);
+          M5.Lcd.drawString(sensSgvStr, 0, 120);
+        }
+        M5.Lcd.unloadFont();
       }
-      M5.Lcd.unloadFont();
       
-      int tw=M5.Lcd.textWidth(sensSgvStr);
+      lastSensorValue = ns.sensSgv;
+      
+      
+      //int tw=M5.Lcd.textWidth(sensSgvStr);
       // int th=M5.Lcd.fontHeight(GFXFF);
       // Serial.print("textWidth="); Serial.println(tw);
       // Serial.print("textHeight="); Serial.println(th);
