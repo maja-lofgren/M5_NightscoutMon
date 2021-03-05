@@ -1512,12 +1512,27 @@ void handleAlarmsInfoLine(struct NSinfo *ns) {
                   break;
                 case 2: // loop + basal information
                 case 3: // openaps + basal information
-                  strcpy(infoStr, "L: ");
-                  strlcat(infoStr, ns->loop_display_label, 64);
-                  M5.Lcd.drawString(infoStr, 0, 220, GFXFF);
-                  strcpy(infoStr, "B: ");
-                  strlcat(infoStr, ns->basal_display, 64);
-                  M5.Lcd.drawString(infoStr, 160, 220, GFXFF);
+                  
+                  //sprintf(infoStr, "L: ", ns->loop_display_symbol);
+                  //strcpy(infoStr, "L: ");
+                  //strlcat(infoStr, ns->loop_display_label, 64);
+                  //M5.Lcd.drawString(infoStr, 0, 215, GFXFF);
+                  //strcpy(infoStr, "B: ");
+                  //strlcat(infoStr, ns->basal_display, 64);
+                  //M5.Lcd.drawString(infoStr, 160, 215, GFXFF);
+                  M5.Lcd.fillRect(0, 215, 160, 20, TFT_BLACK);
+                  char tmpstr[30];
+                  char tmpstr2[30];
+                  sprintf(tmpstr2, "B: %4.2f (", ns->basal_tempbasal);
+                  if( tmpstr2[3]==' ' || tmpstr2[6]=='0')
+                    sprintf(tmpstr2, "B: %3.1f (", ns->basal_tempbasal);
+          
+                  sprintf(tmpstr, "%4.2f)", ns->basal_current);
+                  if( tmpstr[0]==' ' || tmpstr[3]=='0')
+                    sprintf(tmpstr, "%3.1f)", ns->basal_current);
+          
+                  strcat(tmpstr2, tmpstr);
+                  M5.Lcd.drawString(tmpstr2, 0, 215, GFXFF);
                   break;
               }
             }
@@ -1723,20 +1738,6 @@ void draw_page() {
         }
         M5.Lcd.drawString(tmpstr, 0, 72, GFXFF);
 
-        //Basal
-        //strcat(tmpstr, ns.basal_tempbasal);
-        char tmpstr2[30];
-        sprintf(tmpstr2, "b:%4.2f (", ns.basal_tempbasal);
-        if( tmpstr2[2]==' ' || tmpstr2[5]=='0')
-          sprintf(tmpstr2, "b:%3.1f (", ns.basal_tempbasal);
-          
-        sprintf(tmpstr, "%4.2f)", ns.basal_current);
-        if( tmpstr[0]==' ' || tmpstr[3]=='0')
-          sprintf(tmpstr, "%3.1f)", ns.basal_current);
-          
-        strcat(tmpstr2, tmpstr);
-        M5.Lcd.drawString(tmpstr2, 0, 96, GFXFF);
-
         // show BIG delta below the name
         M5.Lcd.setFreeFont(FSSB24);
         
@@ -1747,6 +1748,7 @@ void draw_page() {
           M5.Lcd.setTextColor(TFT_LIGHTGREY, BLACK);
         M5.Lcd.drawString(ns.delta_display, 103, 48, GFXFF);
         M5.Lcd.setFreeFont(FSSB12);
+
 
       } else {
         // show BIG delta below the name
@@ -1803,7 +1805,7 @@ void draw_page() {
       sprintf(tmpstr, "Glyk: %4.1f %s", ns.sensSgv, ns.sensDir);
       Serial.println(tmpstr);
       
-      M5.Lcd.fillRect(231, 110, 320, 114, TFT_BLACK);
+      M5.Lcd.fillRect(185, 110, 320, 114, TFT_BLACK);
       M5.Lcd.setTextSize(2);
       M5.Lcd.setTextDatum(TL_DATUM);
       M5.Lcd.setTextColor(glColor, TFT_BLACK);
