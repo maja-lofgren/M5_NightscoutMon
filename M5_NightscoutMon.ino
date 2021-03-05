@@ -841,6 +841,10 @@ void drawArrow(int x, int y, int asize, int aangle, int pwidth, int plength, uin
   float xx3 = x3*cos(angle)-y3*sin(angle)+dx;
   float yy3 = y3*cos(angle)+x3*sin(angle)+dy;
   M5.Lcd.fillTriangle(xx1,yy1,xx3,yy3,xx2,yy2, color);
+
+  xx1 = x1*cos(angle)-(y1-5)*sin(angle)+dx; //line doesn't have to go all the way to point of arrow
+  yy1 = y1*cos(angle)+(x1-5)*sin(angle)+dy;
+  
   M5.Lcd.drawLine(x, y, xx1, yy1, color);
   M5.Lcd.drawLine(x+1, y, xx1+1, yy1, color);
   M5.Lcd.drawLine(x, y+1, xx1, yy1+1, color);
@@ -1520,19 +1524,24 @@ void handleAlarmsInfoLine(struct NSinfo *ns) {
                   //strcpy(infoStr, "B: ");
                   //strlcat(infoStr, ns->basal_display, 64);
                   //M5.Lcd.drawString(infoStr, 160, 215, GFXFF);
-                  M5.Lcd.fillRect(0, 215, 160, 20, TFT_BLACK);
-                  char tmpstr[30];
-                  char tmpstr2[30];
-                  sprintf(tmpstr2, "B: %4.2f (", ns->basal_tempbasal);
-                  if( tmpstr2[3]==' ' || tmpstr2[6]=='0')
-                    sprintf(tmpstr2, "B: %3.1f (", ns->basal_tempbasal);
-          
-                  sprintf(tmpstr, "%4.2f)", ns->basal_current);
-                  if( tmpstr[0]==' ' || tmpstr[3]=='0')
-                    sprintf(tmpstr, "%3.1f)", ns->basal_current);
-          
-                  strcat(tmpstr2, tmpstr);
-                  M5.Lcd.drawString(tmpstr2, 0, 215, GFXFF);
+
+                  //Do the bellow allways instead of in this switch => view basals on top of alarm
+//                  M5.Lcd.fillRect(0, 215, 160, 20, TFT_BLACK);
+//
+//                  char tmpstr[30];
+//                  char tmpstr2[30];
+//                  sprintf(tmpstr2, "B: %4.2f", ns->basal_tempbasal);
+//                  if( tmpstr2[3]==' ' || tmpstr2[6]=='0')
+//                    sprintf(tmpstr2, "B: %3.1f", ns->basal_tempbasal);
+//                  
+//                  if(ns->basal_tempbasal != ns->basal_current){
+//                    sprintf(tmpstr, " (%4.2f)", ns->basal_current);
+//                    if( tmpstr[2]==' ' || tmpstr[5]=='0')
+//                      sprintf(tmpstr, " (%3.1f)", ns->basal_current);
+//            
+//                    strcat(tmpstr2, tmpstr);
+//                  }
+//                  M5.Lcd.drawString(tmpstr2, 0, 215, GFXFF);
                   break;
               }
             }
@@ -1541,6 +1550,27 @@ void handleAlarmsInfoLine(struct NSinfo *ns) {
       }
     }
   }
+
+  //Always draw basal if selected (on top of alarm...)
+  if(cfg.info_line>=2){
+    //M5.Lcd.fillRect(0, 215, 160, 20, TFT_BLACK);
+
+    char tmpstr[30];
+    char tmpstr2[30];
+    sprintf(tmpstr2, "B:%4.2f", ns->basal_tempbasal);
+    if( tmpstr2[2]==' ' || tmpstr2[5]=='0')
+      sprintf(tmpstr2, "B: %3.1f", ns->basal_tempbasal);
+    
+    if(ns->basal_tempbasal != ns->basal_current){
+      sprintf(tmpstr, "(%4.2f)", ns->basal_current);
+      if( tmpstr[1]==' ' || tmpstr[4]=='0')
+        sprintf(tmpstr, "(%3.1f)", ns->basal_current);
+
+      strcat(tmpstr2, tmpstr);
+    }
+    M5.Lcd.drawString(tmpstr2, 0, 220, GFXFF);
+  }
+  
 
   if(cfg.micro_dot_pHAT != 0) {
     // update Micro Dot pHAT display
@@ -1805,7 +1835,7 @@ void draw_page() {
       sprintf(tmpstr, "Glyk: %4.1f %s", ns.sensSgv, ns.sensDir);
       Serial.println(tmpstr);
       
-      M5.Lcd.fillRect(185, 110, 320, 114, TFT_BLACK);
+      M5.Lcd.fillRect(0, 110, 320, 114, TFT_BLACK);
       M5.Lcd.setTextSize(2);
       M5.Lcd.setTextDatum(TL_DATUM);
       M5.Lcd.setTextColor(glColor, TFT_BLACK);
