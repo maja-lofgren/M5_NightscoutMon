@@ -610,6 +610,7 @@ void buttons_test() {
     // M5.Lcd.printf("C");
     Serial.printf("C");
     int longPress = 0;
+    lastSensorValue=0.0;
     #ifndef ARDUINO_M5STACK_Core2   // long press check only on real buttons, ARDUINO_M5STACK_Core2 has its own power button with long press to power off
       unsigned long btnCPressTime = millis();
       long pwrOffTimeout = 4000;
@@ -1917,41 +1918,45 @@ void draw_page() {
     
       sprintf(tmpstr, "Glyk: %4.1f %s", ns.sensSgv, ns.sensDir);
       Serial.println(tmpstr);
-      
-      M5.Lcd.fillRect(0, 40, 320, 180, TFT_BLACK);
-      M5.Lcd.setTextSize(4);
-      M5.Lcd.setTextDatum(MC_DATUM);
-      M5.Lcd.setTextColor(glColor, TFT_BLACK);
-      char sensSgvStr[30];
-      // int smaller_font = 0;
-      
-        //M5.Lcd.drawString(sensSgvStr, -20, 105);
+
+      if(lastSensorValue!=ns.sensSgv){
         
-      if( cfg.show_mgdl ) {
-        if(ns.sensSgvMgDl<100) {
-          sprintf(sensSgvStr, "%2.0f", ns.sensSgvMgDl);
-          M5.Lcd.loadFont("C059-Bold-180", SD);       // Use font stored on SD
-          //M5.Lcd.setFreeFont(FSSB24);
-        } else {
-          sprintf(sensSgvStr, "%3.0f", ns.sensSgvMgDl);
-          M5.Lcd.loadFont("C059-Bold-140", SD);
-          //M5.Lcd.setFreeFont(FSSB24);
-        }
-      } else {
-        if(ns.sensSgv<10) {
-          sprintf(sensSgvStr, "%3.1f", ns.sensSgv);
-          M5.Lcd.loadFont("C059-Bold-180", SD);
-          //M5.Lcd.setFreeFont(FSSB24);
-        } else {
-          sprintf(sensSgvStr, "%4.1f", ns.sensSgv);
-          M5.Lcd.loadFont("C059-Bold-140", SD);
-          //M5.Lcd.setFreeFont(FSSB18);
-        }
-      }
+        M5.Lcd.fillRect(0, 40, 320, 160, TFT_BLACK);
+        M5.Lcd.setTextSize(4);
+        M5.Lcd.setTextDatum(MC_DATUM);
+        M5.Lcd.setTextColor(glColor, TFT_BLACK);
+        char sensSgvStr[30];
+        // int smaller_font = 0;
+        
+          //M5.Lcd.drawString(sensSgvStr, -20, 105);
           
-      M5.Lcd.drawString(sensSgvStr, 160, 140);
-      //M5.Lcd.drawString(sensSgvStr, 160, 120, GFXFF);
-      M5.Lcd.unloadFont();
+        if( cfg.show_mgdl ) {
+          if(ns.sensSgvMgDl<100) {
+            sprintf(sensSgvStr, "%2.0f", ns.sensSgvMgDl);
+            M5.Lcd.loadFont("C059-Bold-180", SD);       // Use font stored on SD
+            //M5.Lcd.setFreeFont(FSSB24);
+          } else {
+            sprintf(sensSgvStr, "%3.0f", ns.sensSgvMgDl);
+            M5.Lcd.loadFont("C059-Bold-140", SD);
+            //M5.Lcd.setFreeFont(FSSB24);
+          }
+        } else {
+          if(ns.sensSgv<10) {
+            sprintf(sensSgvStr, "%3.1f", ns.sensSgv);
+            M5.Lcd.loadFont("C059-Bold-180", SD);
+            //M5.Lcd.setFreeFont(FSSB24);
+          } else {
+            sprintf(sensSgvStr, "%4.1f", ns.sensSgv);
+            M5.Lcd.loadFont("C059-Bold-140", SD);
+            //M5.Lcd.setFreeFont(FSSB18);
+          }
+        }
+            
+        M5.Lcd.drawString(sensSgvStr, 160, 140);
+        //M5.Lcd.drawString(sensSgvStr, 160, 120, GFXFF);
+        M5.Lcd.unloadFont();
+      }
+      lastSensorValue=ns.sensSgv;
       
       M5.Lcd.fillRect(0, 0, 320, 40, TFT_BLACK);
       M5.Lcd.setFreeFont(FSSB24);
