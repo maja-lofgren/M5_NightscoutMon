@@ -1556,12 +1556,12 @@ void handleAlarmsInfoLine(struct NSinfo *ns) {
     char tmpstr2[30];
     sprintf(tmpstr2, "B:%4.2f", ns->basal_tempbasal);
     if( tmpstr2[2]==' ' || tmpstr2[5]=='0')
-      sprintf(tmpstr2, "B: %3.1f", ns->basal_tempbasal);
+      sprintf(tmpstr2, "B:%3.1f", ns->basal_tempbasal);
     
     if(ns->basal_tempbasal != ns->basal_current){
-      sprintf(tmpstr, "(%4.2f)", ns->basal_current);
-      if( tmpstr[1]==' ' || tmpstr[4]=='0')
-        sprintf(tmpstr, "(%3.1f)", ns->basal_current);
+      sprintf(tmpstr, " (%4.2f)", ns->basal_current);
+      if( tmpstr[2]==' ' || tmpstr[5]=='0')
+        sprintf(tmpstr, " (%3.1f)", ns->basal_current);
 
       strcat(tmpstr2, tmpstr);
     }
