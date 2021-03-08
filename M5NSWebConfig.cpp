@@ -580,7 +580,7 @@ void handleSwitchConfig() {
   w3srv.send(200, "text/html", message);
 
   if (!cfg.is_task_bootstrapping) {
-    M5.Lcd.fillScreen(BLACK);
+    //M5.Lcd.fillScreen(BLACK);
     draw_page();
     if(cfg.LED_strip_mode != 0) { 
       pixels.show();
@@ -906,7 +906,7 @@ void handleGetEditConfigItem() {
   w3srv.send(200, "text/html", message);
 
   if (!cfg.is_task_bootstrapping) {
-    M5.Lcd.fillScreen(BLACK);
+    //M5.Lcd.fillScreen(BLACK);
     draw_page();
     if(cfg.LED_strip_mode != 0) { 
       pixels.show();
@@ -1065,7 +1065,7 @@ void handleSaveConfig() {
     delay(1000);
     ESP.restart();
   } else {
-    M5.Lcd.fillScreen(BLACK);
+    //M5.Lcd.fillScreen(BLACK);
     draw_page();
     if(cfg.LED_strip_mode != 0) { 
       pixels.show();

@@ -927,7 +927,7 @@ int readNightscout(char *url, char *token, struct NSinfo *ns) {
       if(cfg.sgv_only) {
         strcat(NSurl,"/api/v1/entries.json?find[type][$eq]=sgv");
       } else {
-        strcat(NSurl,"/api/v1/entries.json");
+        strcat(NSurl,"/api/v1/entries.json?count=20");
       }
       if ((token!=NULL) && (strlen(token)>0)) {
         if(strchr(NSurl,'?'))
@@ -1038,9 +1038,21 @@ int readNightscout(char *url, char *token, struct NSinfo *ns) {
             ns->sensTime = ns->rawtime / 1000; // no milliseconds, since 2000 would be - 946684800, but ok
             strlcpy(ns->sensDir, JSONdoc[sgvindex]["direction"] | "N/A", 32);
             ns->sensSgv = JSONdoc[sgvindex]["sgv"]; // get value of sensor measurement
-            for(int i=0; i<=9; i++) {
-              ns->last10sgv[i]=JSONdoc[i]["sgv"];
-              ns->last10sgv[i]/=18.0;
+//            for(int i=0; i<=9; i++) {
+//              ns->last10sgv[i]=JSONdoc[i]["sgv"];
+//              ns->last10sgv[i]/=18.0;
+//            }
+            char lastNsID[13];
+            int j=0;
+            int i=0;
+            while(i<=9 && j<20) {
+              if(!strcmp(JSONdoc[j]["NSCLIENT_ID"], lastNsID) == 0){ //sometimes mongodb has multiple sgv's with same NSCLIENT_ID => fetch last 20 entries, and filter out the first 10 distinct for minigraph!
+                ns->last10sgv[i]=JSONdoc[j]["sgv"];
+                ns->last10sgv[i]/=18.0;
+                strncpy(lastNsID, JSONdoc[i]["NSCLIENT_ID"], 13);
+                i++;
+              }
+              j++;
             }
           } else {
             // Sugarmate values
